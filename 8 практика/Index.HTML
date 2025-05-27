@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Відновлювана енергія в Україні - Ігрова версія</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+    <!-- Ігрове HUD -->
+    <div class="game-hud">
+        <div class="score">
+            <span>⚡</span>
+            <span id="scoreValue">0</span>
+            <span>очок</span>
+        </div>
+        <div class="score">
+            <span>🏆</span>
+            <span>Рівень <span id="levelValue">1</span></span>
+        </div>
+        <div class="level-progress">
+            <div class="level-bar" id="levelBar"></div>
+        </div>
+        <div class="achievements" id="achievements">
+            <div class="achievement" data-achievement="first-click" title="Перший клік">🚀</div>
+            <div class="achievement" data-achievement="energy-explorer" title="Дослідник енергії">🔍</div>
+            <div class="achievement" data-achievement="stats-master" title="Майстер статистики">📊</div>
+            <div class="achievement" data-achievement="eco-warrior" title="Еко-воїн">🌱</div>
+            <div class="achievement" data-achievement="green-champion" title="Зелений чемпіон">🏆</div>
+        </div>
+    </div>
+
+    <!-- Попап досягнень -->
+    <div class="achievement-popup" id="achievementPopup">
+        <div>🎉 Досягнення розблоковано! 🎉</div>
+        <div id="achievementText"></div>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <h1>🌟 Відновлювана енергія в Україні 🌟</h1>
+            <p>Інтерактивна гра про розвиток "зеленої" енергетики</p>
+        </header>
+
+        <section class="section" data-section="overview">
+            <h2>🏠 Загальна статистика</h2>
+            <div class="stats-grid">
+                <div class="stat-card" data-stat="power">
+                    <span class="stat-number">12.5</span>
+                    <div class="stat-label">ГВт встановлено</div>
+                </div>
+                <div class="stat-card" data-stat="percentage">
+                    <span class="stat-number">15.2</span>
+                    <div class="stat-label">% від загального споживання</div>
+                </div>
+                <div class="stat-card" data-stat="projects">
+                    <span class="stat-number">450</span>
+                    <div class="stat-label">активних проектів</div>
+                </div>
+                <div class="stat-card" data-stat="co2">
+                    <span class="stat-number">2.8</span>
+                    <div class="stat-label">млн тонн CO2 скорочено</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" data-section="types">
+            <h2>⚡ Типи відновлюваної енергії</h2>
+            <div class="energy-circles">
+                <div class="energy-circle" data-energy="solar">
+                    <span style="font-size: 40px;">☀️</span>
+                    <span>45%</span>
+                    <span>Сонячна</span>
+                </div>
+                <div class="energy-circle" data-energy="wind">
+                    <span style="font-size: 40px;">💨</span>
+                    <span>35%</span>
+                    <span>Вітрова</span>
+                </div>
+                <div class="energy-circle" data-energy="other">
+                    <span style="font-size: 40px;">🌿</span>
+                    <span>20%</span>
+                    <span>Інші</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" data-section="impact">
+            <h2>🌍 Вплив на екологію</h2>
+            <p style="font-size: 18px; line-height: 1.6; text-align: center;">
+                Україна демонструє стабільне зростання у сфері відновлюваної енергетики. 
+                За останні 5 років встановлена потужність зросла в 3 рази, що свідчить про 
+                успішний перехід до екологічно чистих джерел енергії та зменшення залежності 
+                від викопного палива.
+            </p>
+        </section>
+    </div>
+
+    <script src="audio/audio.js" async></script>
+    <script src="scripts/main.js" defer></script>
+</body>
+</html>
