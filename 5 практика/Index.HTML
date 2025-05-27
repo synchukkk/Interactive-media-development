@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Відновлювана енергія в Україні</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+    <div class="progress-indicator" id="progressBar"></div>
+    
+    <div class="container">
+        <header class="header">
+            <h1>Відновлювана енергія в Україні</h1>
+            <p>Інтерактивна візуалізація розвитку "зеленої" енергетики за останні роки</p>
+        </header>
+
+        <div class="controls">
+            <button class="control-btn" onclick="toggleAnimation()">⏸️ Пауза/Відтворення</button>
+            <button class="control-btn" onclick="resetAnimation()">🔄 Перезапустити</button>
+            <button class="control-btn" onclick="toggleSound()">🔊 Звук</button>
+        </div>
+
+        <section class="section" id="overview">
+            <h2>Загальна статистика</h2>
+            <div class="stats-grid">
+                <div class="stat-card" data-tooltip="Загальна встановлена потужність відновлюваних джерел енергії">
+                    <span class="stat-number" data-target="12.5">0</span>
+                    <div class="stat-label">ГВт встановлено</div>
+                </div>
+                <div class="stat-card" data-tooltip="Частка відновлюваної енергії в загальному енергобалансі країни">
+                    <span class="stat-number" data-target="15.2">0</span>
+                    <div class="stat-label">% від загального споживання</div>
+                </div>
+                <div class="stat-card" data-tooltip="Кількість активних проектів відновлюваної енергетики">
+                    <span class="stat-number" data-target="450">0</span>
+                    <div class="stat-label">активних проектів</div>
+                </div>
+                <div class="stat-card" data-tooltip="Скорочення викидів CO2 завдяки використанню чистої енергії">
+                    <span class="stat-number" data-target="2.8">0</span>
+                    <div class="stat-label">млн тонн CO2 скорочено</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="types">
+            <h2>Розподіл за типами енергії</h2>
+            <div class="interactive-circle" style="--percentage: 45%" data-tooltip="Сонячна енергія: 45% від загальної відновлюваної енергії">
+                <div class="circle-text">☀️<br>45%<br>Сонячна</div>
+            </div>
+            <div class="interactive-circle" style="--percentage: 35%" data-tooltip="Вітрова енергія: 35% від загальної відновлюваної енергії">
+                <div class="circle-text">💨<br>35%<br>Вітрова</div>
+            </div>
+            <div class="interactive-circle" style="--percentage: 20%" data-tooltip="Інші джерела: біомаса, гідроенергія тощо">
+                <div class="circle-text">🌿<br>20%<br>Інші</div>
+            </div>
+        </section>
+
+        <section class="section" id="timeline">
+            <h2>Динаміка розвитку по роках</h2>
+            <div class="year-filter">
+                <button class="year-btn active" onclick="filterByYear(2020)">2020</button>
+                <button class="year-btn" onclick="filterByYear(2021)">2021</button>
+                <button class="year-btn" onclick="filterByYear(2022)">2022</button>
+                <button class="year-btn" onclick="filterByYear(2023)">2023</button>
+                <button class="year-btn" onclick="filterByYear(2024)">2024</button>
+            </div>
+            <div class="chart-container">
+                <div class="chart" id="yearChart">
+                    <div class="bar" style="height: 120px;" data-tooltip="2020: 4.2 ГВт встановленої потужності">
+                        <div class="bar-value">4.2</div>
+                        <div class="bar-label">2020</div>
+                    </div>
+                    <div class="bar" style="height: 160px;" data-tooltip="2021: 6.8 ГВт встановленої потужності">
+                        <div class="bar-value">6.8</div>
+                        <div class="bar-label">2021</div>
+                    </div>
+                    <div class="bar" style="height: 200px;" data-tooltip="2022: 8.5 ГВт встановленої потужності">
+                        <div class="bar-value">8.5</div>
+                        <div class="bar-label">2022</div>
+                    </div>
+                    <div class="bar" style="height: 240px;" data-tooltip="2023: 10.3 ГВт встановленої потужності">
+                        <div class="bar-value">10.3</div>
+                        <div class="bar-label">2023</div>
+                    </div>
+                    <div class="bar" style="height: 280px;" data-tooltip="2024: 12.5 ГВт встановленої потужності">
+                        <div class="bar-value">12.5</div>
+                        <div class="bar-label">2024</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section summary">
+            <h3>Підсумок</h3>
+            <p>Україна демонструє стабільне зростання у сфері відновлюваної енергетики. За останні 5 років встановлена потужність зросла в 3 рази, що свідчить про успішний перехід до екологічно чистих джерел енергії.</p>
+            <div class="share-buttons">
+                <button class="share-btn" onclick="shareResults()">📊 Поділитися</button>
+                <button class="share-btn" onclick="downloadData()">📥 Завантажити дані</button>
+            </div>
+        </section>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script src="utils/utils.js"></script>
+    <script src="scripts/main.js"></script>
+    <script src="audio/audio.js"></script>
+</body>
+</html>
