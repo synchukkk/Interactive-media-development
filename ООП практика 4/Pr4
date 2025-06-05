@@ -1,0 +1,67 @@
+// SmartPointer.h
+#pragma once
+
+template<typename T>
+class SmartPointer {
+    T* ptr;
+public:
+    // Конструктор
+    explicit SmartPointer(T* p = nullptr) : ptr(p) {}
+    // Заборона копіювання
+    SmartPointer(const SmartPointer&) = delete;
+    SmartPointer& operator=(const SmartPointer&) = delete;
+    // Переміщення
+    SmartPointer(SmartPointer&& other) noexcept : ptr(other.ptr) { other.ptr = nullptr; }
+    SmartPointer& operator=(SmartPointer&& other) noexcept {
+        if (this != &other) {
+            delete ptr;
+            ptr = other.ptr;
+            other.ptr = nullptr;
+        }
+        return *this;
+    }
+    // Деструктор
+    ~SmartPointer() { delete ptr; }
+    // Оператори доступу
+    T& operator*() const { return *ptr; }
+    T* operator->() const { return ptr; }
+    // Доступ до сирого вказівника
+    T* get() const { return ptr; }
+    // Звільнення володіння
+    T* release() {
+        T* temp = ptr;
+        ptr = nullptr;
+        return temp;
+    }
+    // Скидання вказівника
+    void reset(T* p = nullptr) {
+        if (ptr != p) {
+            delete ptr;
+            ptr = p;
+        }
+    }
+};
+
+// main.cpp
+#include <iostream>
+#include "SmartPointer.h"
+
+class Test {
+public:
+    Test() { std::cout << "Test created\n"; }
+    ~Test() { std::cout << "Test destroyed\n"; }
+    void hello() { std::cout << "Hello!\n"; }
+};
+
+int main() {
+    SmartPointer<Test> ptr(new Test());
+    ptr->hello();
+    // Демонстрація reset
+    ptr.reset(new Test());
+    ptr->hello();
+    // Демонстрація release
+    Test* raw = ptr.release();
+    if (raw) raw->hello();
+    delete raw;
+    return 0;
+}
