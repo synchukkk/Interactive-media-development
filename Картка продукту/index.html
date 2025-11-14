@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MindFlow — Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & ReactDOM (UMD) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel for in-browser JSX transform (only for local demo) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body class="bg-gray-50">
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState, useEffect, useRef } = React;
+
+      // Прості SVG-іконки як React-компоненти
+      function Icon({ children, className = 'w-4 h-4' }) {
+        return (
+          <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            {children}
+          </svg>
+        );
+      }
+
+      const Lightbulb = (props) => (
+        <Icon {...props}>
+          <path d="M9 18h6" />
+          <path d="M10 22h4" />
+          <path d="M12 2a7 7 0 0 0-4 12v2h8v-2a7 7 0 0 0-4-12z" />
+        </Icon>
+      );
+
+      const Users = (props) => (
+        <Icon {...props}>
+          <path d="M17 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M7 21v-2a4 4 0 0 1 3-3.87" />
+          <path d="M12 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" />
+        </Icon>
+      );
+
+      const Target = (props) => (
+        <Icon {...props}>
+          <circle cx="12" cy="12" r="10" />
+          <circle cx="12" cy="12" r="6" />
+          <circle cx="12" cy="12" r="2" />
+        </Icon>
+      );
+
+      const MessageCircle = (props) => (
+        <Icon {...props}>
+          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-12.3 8.38 8.38 0 0 1 3.8-.9" />
+          <path d="M22 2l-5 5" />
+        </Icon>
+      );
+
+      const TrendingUp = (props) => (
+        <Icon {...props}>
+          <path d="M3 17l6-6 4 4 8-8" />
+          <path d="M14 7v6h6" />
+        </Icon>
+      );
+
+      const Zap = (props) => (
+        <Icon {...props}>
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+        </Icon>
+      );
+
+      // Основний компонент
+      function ProductCard() {
+        const defaultSection = 'idea';
+        const [activeSection, setActiveSection] = useState(() => {
+          try {
+            return localStorage.getItem('mindflow-active-section') || defaultSection;
+          } catch (e) {
+            return defaultSection;
+          }
+        });
+
+        useEffect(() => {
+          try {
+            localStorage.setItem('mindflow-active-section', activeSection);
+          } catch (e) {}
+        }, [activeSection]);
+
+        const sections = [
+          { id: 'idea', name: 'Ідея та команда', icon: Lightbulb },
+          { id: 'mission', name: 'Місія та ToV', icon: Target },
+          { id: 'features', name: 'Функції', icon: Zap },
+          { id: 'audience', name: 'Аудиторія та ринок', icon: Users },
+          { id: 'competitors', name: 'Конкуренти', icon: TrendingUp },
+          { id: 'channels', name: 'Канали', icon: MessageCircle }
+        ];
+
+        // keyboard navigation: left/right to move, home/end
+        const listRef = useRef(null);
+        useEffect(() => {
+          function onKey(e) {
+            const idx = sections.findIndex(s => s.id === activeSection);
+            if (e.key === 'ArrowRight') {
+              const next = sections[(idx + 1) % sections.length].id;
+              setActiveSection(next);
+            } else if (e.key === 'ArrowLeft') {
+              const prev = sections[(idx - 1 + sections.length) % sections.length].id;
+              setActiveSection(prev);
+            } else if (e.key === 'Home') {
+              setActiveSection(sections[0].id);
+            } else if (e.key === 'End') {
+              setActiveSection(sections[sections.length - 1].id);
+            }
+          }
+          window.addEventListener('keydown', onKey);
+          return () => window.removeEventListener('keydown', onKey);
+        }, [activeSection]);
+
+        return (
+          <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-8">
+            <div className="max-w-7xl mx-auto">
+              <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center">
+                    <Lightbulb className="w-8 h-8 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-4xl font-bold text-gray-800">MindFlow</h1>
+                    <p className="text-gray-600">AI-асистент для ментального здоров'я та продуктивності</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-lg p-4 mb-8">
+                <div className="flex flex-wrap gap-2" role="tablist" aria-label="Sections" ref={listRef}>
+                  {sections.map(section => {
+                    const Icon = section.icon;
+                    const selected = activeSection === section.id;
+                    return (
+                      <button
+                        key={section.id}
+                        onClick={() => setActiveSection(section.id)}
+                        role="tab"
+                        aria-selected={selected}
+                        tabIndex={selected ? 0 : -1}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-purple-400 ${
+                          selected
+                            ? 'bg-purple-600 text-white shadow-md'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        <span className="text-sm font-medium">{section.name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <main className="bg-white rounded-2xl shadow-xl p-8" aria-live="polite">
+                {activeSection === 'idea' && (
+                  <div className="space-y-6">
+                    <Section title="💡 Ідея продукту">
+                      <p className="text-gray-700 leading-relaxed">
+                        MindFlow — це мобільний застосунок, який поєднує AI-коучинг з науковими методиками 
+                        покращення ментального здоров'я та продуктивності. Застосунок допомагає користувачам 
+                        боротися зі стресом, тривожністю, прокрастинацією та розвивати емоційний інтелект 
+                        через персоналізовані вправи, медитації та щоденні челенджі.
+                      </p>
+                    </Section>
+
+                    <Section title="👥 Команда">
+                      <div className="grid grid-cols-2 gap-4">
+                        <InfoCard label="Product Manager" value="Синчук Ярослав" />
+                        <InfoCard label="Tech Lead" value="Пастух Назар" />
+                      </div>
+                    </Section>
+
+                    <Section title="🎯 Value Proposition">
+                      <div className="bg-gradient-to-r from-purple-100 to-blue-100 p-6 rounded-xl">
+                        <p className="text-lg font-semibold text-gray-800 mb-3">
+                          "Твій персональний AI-психолог, який завжди поруч"
+                        </p>
+                        <ul className="space-y-2 text-gray-700">
+                          <li>✨ Доступна альтернатива традиційній терапії 24/7</li>
+                          <li>🎯 Персоналізовані рекомендації на основі AI-аналізу вашого стану</li>
+                          <li>📊 Відстеження прогресу та патернів настрою</li>
+                          <li>🔒 Повна конфіденційність і безпека даних</li>
+                          <li>💰 Вартість в 10 разів нижча за традиційну терапію</li>
+                        </ul>
+                      </div>
+                    </Section>
+                  </div>
+                )}
+
+                {activeSection === 'mission' && (
+                  <div className="space-y-6">
+                    <Section title="🎯 Місія">
+                      <p className="text-lg text-gray-700 leading-relaxed">
+                        Зробити підтримку ментального здоров'я доступною для кожного, знищуючи бар'єри 
+                        вартості, стигми та географічних обмежень. Ми віримо, що кожна людина заслуговує 
+                        на якісну психологічну підтримку та інструменти для особистісного розвитку.
+                      </p>
+                    </Section>
+                    <Section title="👀 Бачення">
+                      <p className="text-lg text-gray-700 leading-relaxed">
+                        Стати найбільш довіреним AI-помічником для ментального здоров'я в Європі, 
+                        допомагаючи мільйонам людей жити щасливіше та продуктивніше.
+                      </p>
+                    </Section>
+                  </div>
+                )}
+
+                {activeSection === 'features' && (
+                  <div className="space-y-6">
+                    <Section title="🚀 Основні функції">
+                      <div className="space-y-4">
+                        <FeatureCard title="AI-Коуч" description="Персональний AI-асистент, який веде діалог, допомагає розібратися в емоціях та дає практичні поради" badge="Core" />
+                        <FeatureCard title="Трекер настрою" description="Щоденне відстеження емоційного стану з AI-аналізом патернів" badge="Core" />
+                        <FeatureCard title="Бібліотека вправ" description="600+ керованих медитацій, дихальних вправ" badge="Core" />
+                      </div>
+                    </Section>
+                  </div>
+                )}
+
+                {activeSection === 'audience' && (
+                  <div className="space-y-6">
+                    <Section title="🎯 Цільова аудиторія">
+                      <div className="space-y-4">
+                        <AudienceCard segment="Молоді професіонали (25-35 років)" description="Працюють у tech або корпоративному середовищі" percentage="45%" />
+                        <AudienceCard segment="Студенти (18-24 роки)" description="Переживають академічний стрес" percentage="30%" />
+                      </div>
+                    </Section>
+                  </div>
+                )}
+
+                {activeSection === 'competitors' && (
+                  <div className="space-y-6">
+                    <Section title="🏆 Конкуренти">
+                      <CompetitorCard name="Headspace" strength="Велика бібліотека" weakness="Немає AI" differentiation="AI-коуч" />
+                    </Section>
+                  </div>
+                )}
+
+                {activeSection === 'channels' && (
+                  <div className="space-y-6">
+                    <Section title="📱 Канали комунікації">
+                      <ChannelCard platform="Instagram" handle="@mindflow.app" content="Психологічні інсайти" frequency="5-7 постів/тиждень" />
+                    </Section>
+                  </div>
+                )}
+              </main>
+            </div>
+          </div>
+        );
+      }
+
+      function Section({ title, children }) {
+        return (
+          <section>
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">{title}</h2>
+            {children}
+          </section>
+        );
+      }
+
+      function InfoCard({ label, value }) {
+        return (
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <p className="text-sm text-gray-600 mb-1">{label}</p>
+            <p className="font-semibold text-gray-800">{value}</p>
+          </div>
+        );
+      }
+
+      function FeatureCard({ title, description, badge }) {
+        const badgeColors = {
+          Core: 'bg-green-100 text-green-800',
+          Premium: 'bg-purple-100 text-purple-800',
+          Free: 'bg-blue-100 text-blue-800'
+        };
+        return (
+          <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-5 rounded-xl border border-gray-200">
+            <div className="flex items-start justify-between mb-2">
+              <h3 className="font-bold text-gray-800 text-lg">{title}</h3>
+              <span className={`px-3 py-1 rounded-full text-xs font-semibold ${badgeColors[badge]}`}>
+                {badge}
+              </span>
+            </div>
+            <p className="text-gray-600">{description}</p>
+          </div>
+        );
+      }
+
+      function AudienceCard({ segment, description, percentage }) {
+        return (
+          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-5 rounded-xl">
+            <div className="flex items-start justify-between mb-2">
+              <h3 className="font-bold text-gray-800">{segment}</h3>
+              <span className="text-2xl font-bold text-purple-600">{percentage}</span>
+            </div>
+            <p className="text-gray-600">{description}</p>
+          </div>
+        );
+      }
+
+      function CompetitorCard({ name, strength, weakness, differentiation }) {
+        return (
+          <div className="bg-red-50 p-5 rounded-xl border-2 border-red-200">
+            <h3 className="font-bold text-red-900 text-lg mb-3">{name}</h3>
+            <div className="space-y-3">
+              <div>
+                <p className="text-xs text-red-600 font-semibold mb-1">✅ СИЛЬНІ СТОРОНИ</p>
+                <p className="text-gray-700 text-sm">{strength}</p>
+              </div>
+              <div>
+                <p className="text-xs text-red-600 font-semibold mb-1">❌ СЛАБКІ СТОРОНИ</p>
+                <p className="text-gray-700 text-sm">{weakness}</p>
+              </div>
+              <div>
+                <p className="text-xs text-red-600 font-semibold mb-1">💡 ЯК МИ КРАЩІ</p>
+                <p className="text-gray-700 text-sm">{differentiation}</p>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      function ChannelCard({ platform, handle, content, frequency }) {
+        return (
+          <div className="bg-pink-50 p-5 rounded-xl border-2 border-pink-200">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-bold text-pink-900 text-lg">{platform}</h3>
+              <span className="text-sm text-pink-700 font-semibold">{handle}</span>
+            </div>
+            <p className="text-gray-700 mb-2">{content}</p>
+            <p className="text-sm text-pink-600 font-medium">📅 {frequency}</p>
+          </div>
+        );
+      }
+
+      ReactDOM.render(<ProductCard />, document.getElementById('root'));
+    </script>
+  </body>
+</html>
